@@ -4,20 +4,28 @@ var amp;
 var amps = [];
 var xs = [];
 var ys = [];
+var road;
+var img, sun, sound, btn;
+var spectrum, fft;
 
 
 function preload(){
   img = loadImage("bg2.jpg");
   sun = loadImage("gradient.png");
-  sound = loadSound('test.ogg');
+  sound = loadSound('test.ogg');  
 }
 
 
 function setup() {
+  
   createCanvas(800, 600, WEBGL);
   
-  sound.play();
   amp = new p5.Amplitude();
+  fft = new p5.FFT();
+  
+  btn = createImg("play.png");
+  btn.size(150, 150);
+  btn.position(width/2-75, height/2-50);
   
   pointLight(244, 195, 100, 0, 0.5, -0.1);
   //pointLight(255, 255, 255, 0, 0.5, -0.1);
@@ -40,27 +48,32 @@ function setup() {
   // initialize horizon
   for (var i=0;i<=60;i++){
     xs[i] = random(60, 100);
-    //ys[i] = random(80, 350);
     ys[i] = map(waveform[i], -1, 1, 30, 350);
   }
 
+  road = new MagicCarpet();
+  
 }
 
 function draw() {
   
-  //console.log(amp.getLevel());
-  if (frameCount % 3 == 0) {
-  var level = amp.getLevel();
-    level = map(level, 0, 0.8, 30, 600);
-    amps.push(level);
+  if (sound.isPlaying()) {
+    btn.remove();
+    if (frameCount % 6 == 0) {
+      var level = amp.getLevel();
+      level = map(level, 0, 0.8, 30, 600);
+      amps.push(level);
+    }
   }
+  
+  spectrum = fft.analyze();
   
   background(0);
 
   // Draw the plain road.
   
   push();
-  translate(0, 200, 0);
+  translate(0, 200, -50);
   rotateX(-PI / 2);
   texture(img);
   plane(250, 1800);
@@ -86,7 +99,7 @@ function draw() {
   translate(-1600, 100, -2900);
   ambientMaterial(20, 237, 220);
   box(1500, 10, 10);
-  for (var i=0;i<=60;i++) {
+  for (var i = 0;i <= 60; i++) {
     translate(50, 0, 0);
     ambientMaterial(20, 237, 220);
     box(xs[i], ys[i], 10);
@@ -107,15 +120,12 @@ function draw() {
   }
   
   // Draw the plain road.
+  
   translate(0, 180, 0);
-  rotateX(-PI / 2);
-  texture(img);
-  plane(250, 1200);
-  //plane(3000, 1000);
-  rotateX(PI / 2);
-  
-  
-
+  if (frameCount % 180 == 0) {
+    road.fly();
+  }
+  road.roll();
   
 
   // Draw Builidngs on left-hand side!
@@ -126,6 +136,7 @@ function draw() {
     translate(0, 0, -560);
     push();
     translate(0, -leftPile[item].height / 2, 0);
+    ambientMaterial(spectrum[0], spectrum[spectrum.length / 8], spectrum[spectrum.length / 4]);
     leftPile[item].display(item);
     pop();
   }
@@ -140,6 +151,7 @@ function draw() {
     translate(0, 0, -600);
     push();
     translate(0, -rightPile[item].height / 2, 0);
+    ambientMaterial(spectrum[0], spectrum[spectrum.length / 8], spectrum[spectrum.length / 4]);
     rightPile[item].display(item);
     pop();
   }
@@ -149,14 +161,14 @@ function draw() {
   // draw white dots
   push();
   translate(180, 0, 50);
-  //fill(191, 128, 255);
   ambientMaterial(255);
   for(var i=0; i<=600; i++) {
     translate(0, 0, -180);
     sphere(5);
   }
   pop();
-  // draw white dots 2
+  
+  // draw white dots left side
   push();
   translate(-180, 0, 50);
   //fill(191, 128, 255);
@@ -165,51 +177,11 @@ function draw() {
     sphere(5);
   }
   pop();
-  // draw white dots 3
-  /*
-  push();
-  translate(220, 0, 50);
-  //fill(191, 128, 255);
-  for(var i=0; i<=30; i++) {
-    translate(0, 0, -150);
-    sphere(4);
-  }
-  pop();
-  */
-  // draw white dots 4
-  /*
-  push();
-  translate(-220, 0, 50);
-  //fill(191, 128, 255);
-  for(var i=0; i<=30; i++) {
-    translate(0, 0, -150);
-    sphere(4);
-  }
-  pop();
-  */
-
-
 
 
 }
 
 
-function Building() {
-
-  this.height;
-
-  this.display = function(item) {
-    if (item >= amps.length) {
-      this.height = 0;      
-    } else {
-      this.height = amps[item];
-    }
-    ambientMaterial(113, 66, 244);
-    box(60, this.height, 60);
-    
-  }
-
-}
 
 function generateMoreBuilding() {
   
@@ -229,15 +201,7 @@ function generateMoreBuilding() {
   
 }
 
-
-function newCarpet() {
-  // Draw the plain road.
-  push();
-  translate(0, 180, 0);
-  rotateX(-PI / 2);
-  texture(img);
-  plane(250, 1200);
-  //plane(3000, 1000);
-  pop();
-  
+function mousePressed() {
+  if (!sound.isPlaying())
+    sound.play();
 }
