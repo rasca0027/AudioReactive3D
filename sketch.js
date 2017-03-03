@@ -12,7 +12,7 @@ var spectrum, fft;
 function preload(){
   img = loadImage("data/bg2.jpg");
   sun = loadImage("data/gradient.png");
-  sound = loadSound("test.ogg");  
+  sound = loadSound("Adventura.mp3");  
 }
 
 
