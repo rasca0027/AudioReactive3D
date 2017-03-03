@@ -10,9 +10,9 @@ var spectrum, fft;
 
 
 function preload(){
-  img = loadImage("bg2.jpg");
-  sun = loadImage("gradient.png");
-  sound = loadSound("Adventura.mp3");  
+  img = loadImage("data/bg2.jpg");
+  sun = loadImage("data/gradient.png");
+  sound = loadSound("test.ogg");  
 }
 
 
@@ -23,7 +23,7 @@ function setup() {
   amp = new p5.Amplitude();
   fft = new p5.FFT();
   
-  btn = createImg("play.png");
+  btn = createImg("data/play.png");
   btn.size(150, 150);
   btn.position(width/2-75, height/2-50);
   
