@@ -13,7 +13,7 @@ var initial = false;
 function preload(){
   img = loadImage("data/bg2.jpg");
   sun = loadImage("data/gradient.png");
-  sound = loadSound("Adventura.mp3");  
+  sound = loadSound("test.ogg");  
 }
 
 
@@ -213,6 +213,9 @@ function generateMoreBuilding() {
 }
 
 function mousePressed() {
-  if (!sound.isPlaying())
+  if ((mouseX <=480) && (mouseX >= 320) && (mouseY >=220) && (mouseY <= 400) && (!sound.isPlaying())) {
     sound.play();
+    init();
+    initial = true;
+  }
 }
