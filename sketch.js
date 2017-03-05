@@ -13,15 +13,16 @@ var initial = false;
 function preload(){
   img = loadImage("data/bg2.jpg");
   sun = loadImage("data/gradient.png");
-  sound = loadSound("test.ogg");  
+  sound = loadSound("Adventura.mp3");  
 }
 
 
 function setup() {
-  createCanvas(800, 600, WEBGL);
+  createCanvas(1200, 900, WEBGL);
   btn = createImg("data/play.png");
   btn.size(150, 150);
-  btn.position(width/2-75, height/2-50);
+  btn.position(screen.width/2-75, screen.height/2-50);
+  
   
 }
 
@@ -213,7 +214,7 @@ function generateMoreBuilding() {
 }
 
 function mousePressed() {
-  if ((mouseX <=480) && (mouseX >= 320) && (mouseY >=220) && (mouseY <= 400) && (!sound.isPlaying())) {
+  if (!sound.isPlaying()) {
     sound.play();
     init();
     initial = true;
